@@ -143,6 +143,9 @@ class BitField(BigIntegerField):
     #         return BitQuerySaveWrapper(self.model._meta.db_table, self.name, value)
     #     return super(BitField, self).get_db_prep_save(value, connection=connection)
 
+    def from_db_value(self, value, expression, connection, context):
+        return self.to_python(value)
+
     def get_db_prep_lookup(self, lookup_type, value, connection, prepared=False):
         if isinstance(getattr(value, 'expression', None), Bit):
             value = value.expression
