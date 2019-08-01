@@ -99,12 +99,19 @@ class BitField(BigIntegerField):
         self._arg_flags = flags
         flags = list(flags)
         labels = []
+        details = []
         for num, flag in enumerate(flags):
             if isinstance(flag, (tuple, list)):
                 flags[num] = flag[0]
                 labels.append(flag[1])
+                if len(flag) > 2:
+                    details.append(flag[2])
+                else:
+                    details.append(flag[1])
+
             else:
                 labels.append(flag)
+                details.append(flag)
 
         if isinstance(default, (list, tuple, set, frozenset)):
             new_value = 0
@@ -115,6 +122,7 @@ class BitField(BigIntegerField):
         BigIntegerField.__init__(self, default=default, *args, **kwargs)
         self.flags = flags
         self.labels = labels
+        self.details = details
 
     def south_field_triple(self):
         "Returns a suitable description of this field for South."
@@ -180,7 +188,7 @@ class BitField(BigIntegerField):
                     new_value |= (value & (2 ** bit_number))
                 value = new_value
 
-            value = BitHandler(value, self.flags, self.labels)
+            value = BitHandler(value, self.flags, self.labels, self.details)
         else:
             # Ensure flags are consistent for unpickling
             value._keys = self.flags

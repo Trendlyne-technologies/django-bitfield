@@ -117,7 +117,7 @@ class BitHandler(object):
     """
     Represents an array of bits, each as a ``Bit`` object.
     """
-    def __init__(self, value, keys, labels=None):
+    def __init__(self, value, keys, labels=None, details=None):
         # TODO: change to bitarray?
         if value:
             self._value = int(value)
@@ -125,6 +125,7 @@ class BitHandler(object):
             self._value = 0
         self._keys = keys
         self._labels = labels is not None and labels or keys
+        self._details = details is not None and details or keys
 
     def __eq__(self, other):
         if not isinstance(other, BitHandler):
@@ -243,6 +244,13 @@ class BitHandler(object):
         if isinstance(flag, Bit):
             flag = flag.number
         return self._labels[flag]
+
+    def get_detail(self, flag):
+        if isinstance(flag, string_types):
+            flag = self._keys.index(flag)
+        if isinstance(flag, Bit):
+            flag = flag.number
+        return self._details[flag]
 
 
 import django
